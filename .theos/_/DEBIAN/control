@@ -1,0 +1,13 @@
+Package: com.wavelink.bundleidsxi
+Name: BundleIDsXI
+Conflicts: com.td.bundleidsxi, com.wavelink.bundleidsxinoappicons
+Architecture: iphoneos-arm
+Description: App to see installed app bundle IDs.
+Maintainer: TD
+Author: TD
+Section: Utilities
+Icon: https://wavelinkstudios.github.io/site/repo/packageIcons/bidsxi.png
+Depiction: https://wavelinkstudios.github.io/site/repo/depictions/bidsxi/bidsxi.html
+SileoDepiction: https://wavelinkstudios.github.io/site/repo/depictions/sileoNative/bidsxi.json
+Version: 2.0-20+debug
+Installed-Size: 500

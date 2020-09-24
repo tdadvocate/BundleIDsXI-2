@@ -1,0 +1,50 @@
+{
+    CFBundleExecutable = "BundleIDsXI";
+    CFBundleIconFile = "icon.png";
+    CFBundleIconFiles = (
+        "icon.png",
+        "icon~ipad.png",
+        "icon@2x.png",
+        "icon@2x~ipad.png",
+        "icon@3x.png",
+        "icon@3x~ipad.png"
+    );
+    CFBundleIdentifier = "com.wavelink.bundleidsxi";
+    CFBundleInfoDictionaryVersion = 11.0;
+    CFBundlePackageType = APPL;
+    CFBundleSignature = "????";
+    CFBundleSupportedPlatforms = (
+	iPhoneOS
+    );
+    CFBundleVersion = 1.0;
+    DTPlatformName = iphoneos;
+    DTSDKName = iphoneos11.0;
+    LSRequiresIPhoneOS = 1;
+    MinimumOSVersion = 11.0;
+    UILaunchImages = (
+        {
+            UILaunchImageMinimumOSVersion = "8.0";
+            UILaunchImageName = "Default-667h";
+            UILaunchImageOrientation = "Portrait";
+            UILaunchImageSize = "{375, 667}";
+        },
+        {
+            UILaunchImageMinimumOSVersion = "8.0";
+            UILaunchImageName = "Default-736h";
+            UILaunchImageOrientation = "Portrait";
+            UILaunchImageSize = "{414, 736}";
+        },
+        {
+            UILaunchImageMinimumOSVersion = "11.0";
+            UILaunchImageName = "Default-812h";
+            UILaunchImageOrientation = "Portrait";
+            UILaunchImageSize = "{375, 812}";
+        },
+        {
+            UILaunchImageMinimumOSVersion = "7.0";
+            UILaunchImageName = "Default-568h";
+            UILaunchImageOrientation = "Portrait";
+            UILaunchImageSize = "{320, 568}";
+        }
+    );
+}
