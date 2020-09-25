@@ -6,6 +6,7 @@ include $(THEOS)/makefiles/common.mk
 APPLICATION_NAME = BundleIDsXI
 BundleIDsXI_FILES = main.m BundleIDsAppDelegate.m RootViewController.m
 BundleIDsXI_FRAMEWORKS = UIKit CoreGraphics
+BundleIDsXI_PRIVATE_FRAMEWORKS = OnBoardingKit
 
 include $(THEOS_MAKE_PATH)/application.mk
 

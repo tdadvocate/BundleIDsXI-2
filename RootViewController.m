@@ -63,10 +63,62 @@ static void post() {
 
         self.navigationItem.searchController = self.searchController;
         self.navigationItem.hidesSearchBarWhenScrolling = NO; // unfortunatly, this is required.
+        
+        if(@available(iOS 13.0, *)) {
+        self.blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterial];
+        self.navigationBar.backgroundView.effectView1.effect = self.blurEffect;
+        } else {
+        self.navigationBar.backgroundView.effectView1.effect = nil;
+        }
 
-        self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+        self.tableView = [[UITableView alloc] initWithFrame:[UIScreen mainScreen].bounds style:UITableViewStyleGrouped];
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
+        
+        self.view.frame = [UIScreen mainScreen].bounds;
+        
+        if(@available(iOS 13.0, *)) {
+        self.tableDynamicColor = [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traitCollection) {
+        BOOL isDarkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+        BOOL isLightMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight;
+        BOOL isUnspecified = traitCollection.userInterfaceStyle == UIUserInterfaceStyleUnspecified;
+            if (isDarkMode) {
+                return [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1.0f];
+            } if (isLightMode) {
+                return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+                }
+            if (isUnspecified) {
+               return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+               }
+            return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+        }];
+        
+        self.tableView.backgroundColor = self.tableDynamicColor;
+        } else {
+        self.tableView.backgroundColor = [UIColor whiteColor];
+        }
+        
+        if(@available(iOS 13.0, *)) {
+        self.backgroundDynamicColor = [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traitCollection) {
+        BOOL isDarkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+        BOOL isLightMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight;
+        BOOL isUnspecified = traitCollection.userInterfaceStyle == UIUserInterfaceStyleUnspecified;
+            if (isDarkMode) {
+                return [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1.0f];
+            } if (isLightMode) {
+                return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+                }
+            if (isUnspecified) {
+               return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+               }
+            return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+        }];
+        
+        self.view.backgroundColor = self.backgroundDynamicColor;
+        } else {
+        self.view.backgroundColor = [UIColor whiteColor];
+        }
+        
         [self.view addSubview:self.tableView];
 
         // This is probably a terrible way to do it.
@@ -123,17 +175,47 @@ static void post() {
     return 1;
 }
 
+- (void)viewWillLayoutSubviews {
+    self.tableView.frame = [UIScreen mainScreen].bounds;
+    self.view.frame = [UIScreen mainScreen].bounds;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SkittyAppCell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:3 reuseIdentifier:@"SkittyAppCell"];
     }
-
+    
+    if(@available(iOS 13.0, *)) {
+    cell.detailTextLabel.textColor = [UIColor systemGray2Color];
+    } else {
     cell.detailTextLabel.textColor = [UIColor grayColor];
+    }
     
     if (![self.preferencesAppList containsObject:self.identifiers[indexPath.row]]) {
     }
-
+    
+    if(@available(iOS 13.0, *)) {
+        
+    self.labelDynamicColor = [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traitCollection) {
+    BOOL isDarkMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+    BOOL isLightMode = traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight;
+    BOOL isUnspecified = traitCollection.userInterfaceStyle == UIUserInterfaceStyleUnspecified;
+        if (isDarkMode) {
+            return [UIColor colorWithRed:255/255.0f green:255/255.0f blue:255/255.0f alpha:1.0f];
+        } if (isLightMode) {
+            return [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1.0f];
+            }
+        if (isUnspecified) {
+           return [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1.0f];
+           }
+        return [UIColor colorWithRed:0/255.0f green:0/255.0f blue:0/255.0f alpha:1.0f];
+    }];
+    
+    cell.textLabel.textColor = self.labelDynamicColor;
+    } else {
+    cell.textLabel.textColor = [UIColor blackColor];
+    }
     cell.textLabel.text = [self.fullAppList objectForKey:self.identifiers[indexPath.row]];
     cell.detailTextLabel.text = self.identifiers[indexPath.row];
     
@@ -148,18 +230,53 @@ static void post() {
     //copy single selected application bundle ID to clipboard
     [UIPasteboard generalPasteboard].string = self.identifiers[indexPath.row];
     
-    //show single bundle ID alert
-    showID = [UIAlertController alertControllerWithTitle:self.identifiers[indexPath.row] message:@"Copied to the clipboard" preferredStyle:UIAlertControllerStyleAlert];
+    if(@available(iOS 13.0, *)) {
+    self.bundleidController = [[OBWelcomeController alloc] initWithTitle:self.identifiers[indexPath.row] detailText:@"" icon:[UIImage _applicationIconImageForBundleIdentifier:self.identifiers[indexPath.row] format:0 scale:[UIScreen mainScreen].scale]];
     
-    //The manual dismissal prompt for the UIAlertView
-    UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^ (UIAlertAction *_Nonnull action) {
-    NSLog(@"OK button is pressed");
-    }];
-    [showID addAction:actionOK];
+    [self.bundleidController addBulletedListItemWithTitle:@"Copied" description:@"Bundle ID copied to ClipBoard" image:[UIImage systemImageNamed:@"doc.on.doc.fill"]];
+        
+    OBBoldTrayButton* continueButtonTint = [OBBoldTrayButton buttonWithType:1];
+    [continueButtonTint addTarget:self action:@selector(dismissVCTint) forControlEvents:UIControlEventTouchUpInside];
+    [continueButtonTint setTitle:@"Swipe To Dismiss" forState:UIControlStateNormal];
+    [continueButtonTint setClipsToBounds:YES];
+    [continueButtonTint setTitleColor:[UIColor systemPinkColor] forState:UIControlStateNormal];
+    continueButtonTint.tintColor = [UIColor clearColor];
+    [continueButtonTint.layer setCornerRadius:15];
+    [self.bundleidController.buttonTray addButton:continueButtonTint];
+
+    self.bundleidController.buttonTray.effectView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterial];
     
-    //Allowing the alert to actually be displayed
-    [self presentViewController:showID animated:YES completion:nil];
+    UIVisualEffectView *effectWelcomeView = [[UIVisualEffectView alloc] initWithFrame:self.bundleidController.viewIfLoaded.bounds];
     
+    effectWelcomeView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterial];
+    
+    [self.bundleidController.viewIfLoaded insertSubview:effectWelcomeView atIndex:0];
+    
+    self.bundleidController.viewIfLoaded.backgroundColor = [UIColor clearColor];
+
+    //[self.bundleidController.buttonTray addCaptionText:@"BundleIDsXi"];
+
+    self.bundleidController.modalPresentationStyle = UIModalPresentationPageSheet;
+    self.bundleidController.modalInPresentation = NO;
+    self.bundleidController.view.tintColor = [UIColor systemPinkColor];
+    [self presentViewController:self.bundleidController animated:YES completion:nil];
+    } else {
+        //show single bundle ID alert
+            showID = [UIAlertController alertControllerWithTitle:self.identifiers[indexPath.row] message:@"Copied to the clipboard" preferredStyle:UIAlertControllerStyleAlert];
+            
+            //The manual dismissal prompt for the UIAlertView
+            UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^ (UIAlertAction *_Nonnull action) {
+            NSLog(@"OK button is pressed");
+            }];
+            [showID addAction:actionOK];
+            
+            //Allowing the alert to actually be displayed
+            [self presentViewController:showID animated:YES completion:nil];
+    }
+}
+
+-(void)dismissVCTint {
+    [self.bundleidController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -215,6 +332,54 @@ static void post() {
 //How the Copy All button works
 -(void)copyAllButton:(id)sender {
     
+    NSString* copiedAllString = @"";
+    for (int i=0; i < self.appList.count; i ++) {
+        //Create the string of all application names
+        NSString *allNames = [NSString stringWithFormat:@"%@~", [self.fullAppList objectForKey:self.identifiers[i]]];
+        //NSString *allNames = [NSString stringWithFormat:@"%@\n", [self.fullAppList objectForKey:self.fullAppList][i]];
+        //Add the string of application names to the copied all string
+        copiedAllString = [copiedAllString stringByAppendingString:allNames];
+        //Create the string of all application bundle IDs
+        NSString *allBundles = [NSString stringWithFormat:@"%@%@", self.identifiers[i], @" "];
+        //Add the string of application bundle IDs to the copied all string
+        copiedAllString = [copiedAllString stringByAppendingString:allBundles];
+    }
+    
+    //copy all bundle IDs to clipboard
+    [UIPasteboard generalPasteboard].string = copiedAllString;
+    
+    if(@available(iOS 13.0, *)) {
+        self.copyallController = [[OBWelcomeController alloc] initWithTitle:@"BundleIDsXI" detailText:@"" icon:nil];
+    
+    [self.copyallController addBulletedListItemWithTitle:@"Copied" description:@"All Bundle IDs copied to ClipBoard" image:[UIImage systemImageNamed:@"doc.on.doc.fill"]];
+        
+    OBBoldTrayButton* continueButtonTint2 = [OBBoldTrayButton buttonWithType:1];
+    [continueButtonTint2 addTarget:self action:@selector(dismissVCTint2) forControlEvents:UIControlEventTouchUpInside];
+    [continueButtonTint2 setTitle:@"Swipe To Dismiss" forState:UIControlStateNormal];
+    [continueButtonTint2 setClipsToBounds:YES];
+    [continueButtonTint2 setTitleColor:[UIColor systemPinkColor] forState:UIControlStateNormal];
+    continueButtonTint2.tintColor = [UIColor clearColor];
+    [continueButtonTint2.layer setCornerRadius:15];
+    [self.copyallController.buttonTray addButton:continueButtonTint2];
+
+    self.copyallController.buttonTray.effectView.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterial];
+    
+    UIVisualEffectView *effectWelcomeView2 = [[UIVisualEffectView alloc] initWithFrame:self.copyallController.viewIfLoaded.bounds];
+    
+    effectWelcomeView2.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterial];
+    
+    [self.copyallController.viewIfLoaded insertSubview:effectWelcomeView2 atIndex:0];
+    
+    self.copyallController.viewIfLoaded.backgroundColor = [UIColor clearColor];
+
+    //[self.copyallController.buttonTray addCaptionText:@"BundleIDsXi"];
+
+    self.copyallController.modalPresentationStyle = UIModalPresentationPageSheet;
+    self.copyallController.modalInPresentation = NO;
+    self.copyallController.view.tintColor = [UIColor systemPinkColor];
+    [self presentViewController:self.copyallController animated:YES completion:nil];
+    } else {
+
     //show copy all bundle IDs alert
     copyAllAlert = [UIAlertController alertControllerWithTitle:@"All Bundle IDs" message:@"Copied to the clipboard" preferredStyle:UIAlertControllerStyleAlert];
         
@@ -228,13 +393,14 @@ static void post() {
     
     //All non-hidden bundle IDs to be copied
     NSString* copiedAllString = @"";
-    for (int i=0; i < _appList.count; i ++) {
+    for (int i=0; i < self.appList.count; i ++) {
         //Create the string of all application names
-        NSString *allNames = [NSString stringWithFormat:@"%@\n", [self.fullAppList objectForKey:self.fullAppList][i]];
+        NSString *allNames = [NSString stringWithFormat:@"%@~", [self.fullAppList objectForKey:self.identifiers[i]]];
+        //NSString *allNames = [NSString stringWithFormat:@"%@\n", [self.fullAppList objectForKey:self.fullAppList][i]];
         //Add the string of application names to the copied all string
         copiedAllString = [copiedAllString stringByAppendingString:allNames];
         //Create the string of all application bundle IDs
-        NSString *allBundles = [NSString stringWithFormat:@"%@\n", self.identifiers[i]];
+        NSString *allBundles = [NSString stringWithFormat:@"%@%@", self.identifiers[i], @" "];
         //Add the string of application bundle IDs to the copied all string
         copiedAllString = [copiedAllString stringByAppendingString:allBundles];
     }
@@ -242,6 +408,12 @@ static void post() {
     //copy all bundle IDs to clipboard
     [UIPasteboard generalPasteboard].string = copiedAllString;
 
+    }
+    
+}
+
+-(void)dismissVCTint2 {
+    [self.copyallController dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
