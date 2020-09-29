@@ -19,6 +19,7 @@ CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 @interface OBWelcomeController : UIViewController
 @property (nonatomic,retain) UIView * viewIfLoaded;
 @property (nonatomic,strong) UIColor * backgroundColor;
+-(void)set_shouldInlineButtontray:(BOOL)arg1 ;
 - (OBButtonTray *)buttonTray;
 - (id)initWithTitle:(id)arg1 detailText:(id)arg2 icon:(id)arg3;
 - (void)addBulletedListItemWithTitle:(id)arg1 description:(id)arg2 image:(id)arg3;
@@ -37,6 +38,8 @@ CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 @property (nonatomic, retain) UIColor *backgroundDynamicColor;
 @property (nonatomic, retain) OBWelcomeController *bundleidController;
 @property (nonatomic, retain) OBWelcomeController *copyallController;
+@property (nonatomic, retain) OBBoldTrayButton* continueButtonTint;
+@property (nonatomic, retain) OBBoldTrayButton* continueButtonTint2;
 @property (nonatomic, retain) UIColor *tableDynamicColor;
 @property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic, retain) UISearchController *searchController;
@@ -49,7 +52,6 @@ CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 @property (nonatomic, retain) NSArray *unsupportedIdentifiers;
 @property (nonatomic, retain) NSArray *identifiers;
 @property (nonatomic, retain) NSArray *supportedApps;
-
 - (void)recieveAppList:(NSDictionary *)appList;
 
 @end

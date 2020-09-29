@@ -1,5 +1,6 @@
 Package: com.wavelink.bundleidsxi
 Name: BundleIDsXI
+Depends: mobilesubstrate
 Conflicts: com.td.bundleidsxi, com.wavelink.bundleidsxinoappicons
 Version: 2.0
 Architecture: iphoneos-arm
